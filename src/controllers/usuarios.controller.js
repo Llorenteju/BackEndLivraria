@@ -3,16 +3,26 @@ import { db } from "../config/db.js"
 //  Rotas CRUD
 // ============================
 
+// CREATE TABLE IF NOT EXISTS usuarios (
+//   id INT AUTO_INCREMENT PRIMARY KEY,
+//   nome VARCHAR(100) NOT NULL,
+//   email VARCHAR(100) UNIQUE NOT NULL,
+//   senha VARCHAR(100) NOT NULL,
+//   data_nascimento DATE,
+//   celular VARCHAR(20),
+//   curso VARCHAR(100),
+//   perfil ENUM('Aluno', 'Admin') DEFAULT 'Aluno'
+// );
 
 export async function criarUsuario(req, res) {
     try {
-        const { nome, email, senha } = req.body;
-        if (!nome || !email || !senha)
+        const { nome, email, senha,  data_nascimento, celular, curso, perfil} = req.body;
+        if (!nome || !email || !senha || !data_nascimento || !celular || !curso || !perfil )
             return res.status(400).json({ erro: "Campos obrigatórios" });
 
         await db.execute(
-            "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)",
-            [nome, email, senha]
+            "INSERT INTO usuarios (nome, email, senha, data_nascimento, celular, curso, perfil) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            [nome, email, senha, data_nascimento, celular, curso, perfil]
         );
 
         res.json({ mensagem: "Usuário criado com sucesso!" });
@@ -47,11 +57,13 @@ export async function obterUsuario(req, res) {
 
 export async function atualizaUsuario(req, res) {
     try {
-        const { nome, email, senha } = req.body;
+        const { nome, email, senha, data_nascimento, celular, curso, perfil } = req.body;
+
         await db.execute(
-            "UPDATE usuarios SET nome = ?, email = ?, senha = ? WHERE id = ?",
-            [nome, email, senha, req.params.id]
+            "UPDATE usuarios SET nome = ?, email = ?, senha = ?, data_nascimento = ?, celular = ?, curso = ?, perfil = ? WHERE id = ?",
+            [nome, email, senha, data_nascimento, celular, curso, perfil, req.params.id]
         );
+
         res.json({ mensagem: "Usuário atualizado com sucesso!" });
     } catch (err) {
         res.status(500).json({ erro: err.message });
