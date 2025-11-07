@@ -11,7 +11,6 @@ import express from "express"
 
 const router = express.Router();
 
-router.put("/", criarAvaliacao);
 router.get("/",listarAvaliacoes);
 router.get("/:id",buscarAvaliacao);
 router.post("/", criarAvaliacao);
